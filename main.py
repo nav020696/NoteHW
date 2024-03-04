@@ -37,18 +37,21 @@ def write_file(file_name, lst):
         f_writer.writerows(res)
 
 file_name = 'note.csv'
+commands = ('1 - Exit', '2 - Write','3 - Read','4 - Change', '5 - Delete')
 
 def main():
     while True:
-        command = input("Введите команду: ")
-        if command == 'q':
+        print("Введите номер команды из списка")
+        print(*commands, sep="\n")
+        command = input("Команда: ")
+        if command == '1':
             print("До свидания")
             break
-        elif command == 'w':
+        elif command == '2':
             if not exists(file_name):
                 create_file(file_name)
             write_file(file_name, get_info())
-        elif command == 'r':
+        elif command == '3':
             if not exists(file_name):
                 print("Файл отсутствует. Создайте файл")
                 continue 
