@@ -9,7 +9,7 @@ def count():
     return index
 
 def get_info():
-    i = count();
+    i = count()
     title = input("Введите заголовок заметки ")
     body = input("Введите текст заметки ")
     dt_now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -17,7 +17,6 @@ def get_info():
 
 
 def create_file(file_name):
-    #менеджер контекста
     with open(file_name, "w", encoding='utf-8') as data:
         f_writer = DictWriter(data, fieldnames=['Идентификатор', 'Заголовок', 'Текст', 'Дата и время последнего изменения'])
         f_writer.writeheader()
@@ -35,6 +34,26 @@ def write_file(file_name, lst):
         f_writer = DictWriter(data, fieldnames=['Идентификатор', 'Заголовок', 'Текст', 'Дата и время последнего изменения'])
         f_writer.writeheader()
         f_writer.writerows(res)
+
+def change_note(file_name, number_of_note, dates):
+    res = read_file(file_name)
+    if number_of_note > len(res):
+        print("Заметки с таким идентификатором не существует")
+        return
+    temp = res[number_of_note - 1]
+    if dates == '1':
+        new_title = input("Введите новый заголовок заметки ")
+        temp['Заголовок'] = new_title
+    else:
+        new_body = input("Введите новый текст заметки ")
+        temp['Текст'] = new_body
+    temp['Дата и время последнего изменения'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    res[number_of_note - 1] = temp
+    with open(file_name, "w", encoding='utf-8', newline='') as data:
+        f_writer = DictWriter(data, fieldnames=['Идентификатор', 'Заголовок', 'Текст', 'Дата и время последнего изменения'])
+        f_writer.writeheader()
+        f_writer.writerows(res)
+
 
 file_name = 'note.csv'
 commands = ('1 - Exit', '2 - Write','3 - Read','4 - Change', '5 - Delete')
@@ -55,5 +74,19 @@ def main():
             if not exists(file_name):
                 print("Файл отсутствует. Создайте файл")
                 continue 
-            print(*read_file(file_name), sep="\n")            
+            print(*read_file(file_name), sep="\n")
+        elif command == '4':       
+            is_valid_number = False
+            while not is_valid_number:
+                try:
+                    ident = int(input("Введите идентификатор заметки для изменения: "))
+                    print('Какие данные Вы хотите изменить: заголовок или текст?')
+                    print ('1 - Заголовок')
+                    print ('2 - Текст')
+                    dates = input()
+                    change_note(file_name, ident, dates)
+                    is_valid_number = True
+                except ValueError:
+                    print("Не валидный номер заметки")
+                    continue   
 main()
