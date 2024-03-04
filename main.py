@@ -2,12 +2,18 @@ from os.path import exists
 from csv import DictReader, DictWriter
 import datetime
 
+index = 0
+def count():
+    global index
+    index += 1
+    return index
+
 def get_info():
-    index = 0
+    i = count();
     title = input("Введите заголовок заметки ")
     body = input("Введите текст заметки ")
     dt_now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return [index+1, title, body, dt_now]
+    return [i, title, body, dt_now]
 
 
 def create_file(file_name):
