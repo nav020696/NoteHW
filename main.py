@@ -37,7 +37,7 @@ def write_file(file_name, lst):
 
 def change_note(file_name, number_of_note, dates):
     res = read_file(file_name)
-    if number_of_note > len(res):
+    if number_of_note > len(res) or number_of_note <= 0:
         print("Заметки с таким идентификатором не существует")
         return
     temp = res[number_of_note - 1]
@@ -49,6 +49,17 @@ def change_note(file_name, number_of_note, dates):
         temp['Текст'] = new_body
     temp['Дата и время последнего изменения'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     res[number_of_note - 1] = temp
+    with open(file_name, "w", encoding='utf-8', newline='') as data:
+        f_writer = DictWriter(data, fieldnames=['Идентификатор', 'Заголовок', 'Текст', 'Дата и время последнего изменения'])
+        f_writer.writeheader()
+        f_writer.writerows(res)
+
+def delete_note(file_name, number_of_note):
+    res = read_file(file_name)
+    if number_of_note > len(res) or number_of_note <= 0:
+        print("Заметки с таким идентификатором не существует")
+        return
+    res.pop(number_of_note - 1)
     with open(file_name, "w", encoding='utf-8', newline='') as data:
         f_writer = DictWriter(data, fieldnames=['Идентификатор', 'Заголовок', 'Текст', 'Дата и время последнего изменения'])
         f_writer.writeheader()
@@ -86,6 +97,16 @@ def main():
                     dates = input()
                     change_note(file_name, ident, dates)
                     is_valid_number = True
+                except ValueError:
+                    print("Не валидный номер заметки")
+                    continue
+        elif command == '5':       
+            is_valid_number_1 = False
+            while not is_valid_number_1:
+                try:
+                    ident_of_note = int(input("Введите идентификатор заметки для удаления: "))
+                    delete_note(file_name, ident_of_note)
+                    is_valid_number_1 = True
                 except ValueError:
                     print("Не валидный номер заметки")
                     continue   
